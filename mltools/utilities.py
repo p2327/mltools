@@ -168,31 +168,29 @@ preproc_fn: Callable[[pd.DataFrame], pd.DataFrame]=None, max_n_cat: int=None, su
     For each column which is not in skip_flds or in ignore_flds, 
     NaN values are replaced by the median value of the column.
     """
-    
     if not ignore_flds: 
         ignore_flds=[]
+        
     if not skip_flds: 
         skip_flds=[]
-    # check for truthyness
+        
     if subset: 
-        df = get_sample(df,subset)
+        df = get_sample(df, subset)
     else: 
         df = df.copy()
     ignored_flds = df.loc[:, ignore_flds]
     df.drop(ignore_flds, axis=1, inplace=True)
-    
+
     if preproc_fn: 
         preproc_fn(df)
-    # data label to predict (yhat)
+
     if y_fld is None: 
         y = None
     else:
-        # transform column to categorical if not numeric
         if not is_numeric_dtype(df[y_fld]): 
             df[y_fld] = pd.Categorical(df[y_fld]).codes
         y = df[y_fld].values
-    # remove the target column
-    skip_flds += [y_fld]    
+        skip_flds += [y_fld]
     df.drop(skip_flds, axis=1, inplace=True)
 
     if na_dict is None: 
@@ -201,30 +199,26 @@ preproc_fn: Callable[[pd.DataFrame], pd.DataFrame]=None, max_n_cat: int=None, su
         na_dict = na_dict.copy()
     na_dict_initial = na_dict.copy()
 
-    # handle missing data
-    for label, content in df.items(): 
-        na_dict = fix_missing(df, label, label, na_dict)
-    # drop the _na suffix columns created by calling fix_missing
+    for n,c in df.items(): 
+        na_dict = fix_missing(df, c, n, na_dict)
+    
     if len(na_dict_initial.keys()) > 0:
-        df.drop([a + '_na' for a in list(set(na_dict.keys()) - set(na_dict_initial.keys()))], 
-                axis=1, 
-                inplace=True)
+        df.drop([a + '_na' for a in list(set(na_dict.keys()) - set(na_dict_initial.keys()))], axis=1, inplace=True)
 
-    # normalize
     if do_scale: 
         mapper = scale_vars(df, mapper)
+
+    for n,c in df.items(): 
+        numericalize(df, c, n, max_n_cat)
     
-    # content: the column entries belongin to a label, as a series
-    for label, content in df.items(): 
-        numericalize(df, label, label, max_n_cat)
     df = pd.get_dummies(df, dummy_na=True)
     df = pd.concat([ignored_flds, df], axis=1)
-    response = [df, y, na_dict]
+    res = [df, y, na_dict]
         
     if do_scale: 
         res = res + [mapper]
 
-    return response
+    return res
 
 
 def fix_missing(df: pd.DataFrame, label: str, target_label: str, na_dict: dict=None) -> dict:
