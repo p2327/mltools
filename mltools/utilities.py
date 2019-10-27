@@ -199,8 +199,8 @@ preproc_fn: Callable[[pd.DataFrame], pd.DataFrame]=None, max_n_cat: int=None, su
         na_dict = na_dict.copy()
     na_dict_initial = na_dict.copy()
 
-    for n,c in df.items(): 
-        na_dict = fix_missing(df, c, n, na_dict)
+    for label, content in df.items(): 
+        na_dict = fix_missing(df, content, label, na_dict)
     
     if len(na_dict_initial.keys()) > 0:
         df.drop([a + '_na' for a in list(set(na_dict.keys()) - set(na_dict_initial.keys()))], axis=1, inplace=True)
@@ -208,8 +208,8 @@ preproc_fn: Callable[[pd.DataFrame], pd.DataFrame]=None, max_n_cat: int=None, su
     if do_scale: 
         mapper = scale_vars(df, mapper)
 
-    for n,c in df.items(): 
-        numericalize(df, c, n, max_n_cat)
+    for label, content in df.items(): 
+        numericalize(df, content, label, max_n_cat)
     
     df = pd.get_dummies(df, dummy_na=True)
     df = pd.concat([ignored_flds, df], axis=1)
@@ -221,7 +221,7 @@ preproc_fn: Callable[[pd.DataFrame], pd.DataFrame]=None, max_n_cat: int=None, su
     return res
 
 
-def fix_missing(df: pd.DataFrame, label: str, target_label: str, na_dict: dict=None) -> dict:
+def fix_missing(df: pd.DataFrame, col: pd.Series, target_label: str, na_dict: dict=None) -> dict:
     """
     Replaces na values with median if data is numeric.
     Adds _na suffix columns where True means a NaN was replaced. 
@@ -243,20 +243,20 @@ def fix_missing(df: pd.DataFrame, label: str, target_label: str, na_dict: dict=N
     # assumes a numerica dtype
     if na_dict is None:
         na_dict={}
-    if is_numeric_dtype(df[label]):
-        if pd.isnull(df[label]).sum() or (target_label in na_dict):
-            df[target_label+'_na'] = pd.isnull(df[label])
-            filler = na_dict[target_label] if target_label in na_dict else df[label].median()
-            df[target_label] = df[label].fillna(filler)
+    if is_numeric_dtype(col):
+        if pd.isnull(col).sum() or (target_label in na_dict):
+            df[target_label+'_na'] = pd.isnull(col)
+            filler = na_dict[target_label] if target_label in na_dict else col.median()
+            df[target_label] = col.fillna(filler)
             na_dict[target_label] = filler
     return na_dict
 
 
-def numericalize(df: pd.DataFrame, label: str, target_label: str, max_n_cat: int=None) -> pd.DataFrame:
+def numericalize(df: pd.DataFrame, col: pd.Series, target_label: str, max_n_cat: int=None) -> pd.DataFrame:
     """
     Converts non numeric values to numeric.
     """
     # codes+1 is to have NaN values set to 0 and not -1
-    if not is_numeric_dtype(df[label]) and (max_n_cat is None or len(df[label].cat.categories)>max_n_cat):
-        df[target_label] = pd.Categorical(df[label]).codes+1
+    if not is_numeric_dtype(col) and (max_n_cat is None or len(col.cat.categories)>max_n_cat):
+        df[target_label] = pd.Categorical(col).codes+1
     return df
