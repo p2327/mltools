@@ -16,6 +16,6 @@ Install in Jupyter Notebook with:
 !pip install git+https://github.com/p2327/mltools
 ```
 
-*Documentation:* 
+Documentation: 
 
 https://bit.ly/2o2LqxL
