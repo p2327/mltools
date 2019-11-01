@@ -1,1 +1,3 @@
 include mltools/data/iris.csv
+include mltools/data/currency.csv
+include mltools/data/bulldozers_sales.csv

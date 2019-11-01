@@ -1,3 +1,4 @@
+# coding: utf-8 
 from unittest import TestCase
 from mltools import utilities
 import pandas as pd
@@ -13,15 +14,11 @@ use_dict = {'a': 1, 'b': 2, 'c': 3}
 # test data for fix_missing
 use_df = pd.DataFrame({'col1' : [1, np.NaN, 3], 'col2' : [5, 2, 2]})
 
+
 def test_train_cats(): # ok
     s = utilities.train_cats(iris_data)
     assert isinstance(s['species'].dtype, pd.CategoricalDtype)
 
-'''
-def test_add_datepart(): # ok
-    s = utilities.add_datepart(sales_data, 'saledate')
-    assert isinstance(s, pd.DataFrame)
-'''
 
 def test_add_datepart(): # ok
     s = add_datepart(sales_data, 'saledate')
@@ -35,7 +32,7 @@ def test_remove_column_if_label_contains(): # ok
 
 def test_remove_row_if_column_contains():
     s = utilities.remove_row_if_column_contains(iris_data, 'sepal_width', 3.5)
-    assert s.['sepal_width'][0] != 3.5
+    assert s['sepal_width'][0] != 3.5
 
 
 # add some currency data for this
@@ -78,3 +75,5 @@ def test_numericalize():
     s = utilities.numericalize(iris_data, 'species', 'setosa')
     assert s.shape[1] == 6
 
+if __name__ == '__main__':
+    unittest.main()
