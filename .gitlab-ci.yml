@@ -1,0 +1,11 @@
+image: "python:3.7"
+
+stages:
+  - build
+  - test
+  - deply
+
+before_script:
+  - mltools install
+
+  
