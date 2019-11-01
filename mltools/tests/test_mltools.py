@@ -1,6 +1,7 @@
 # coding: utf-8 
-from unittest import TestCase
+import pytest
 from mltools import utilities
+from mltools.utilities import *
 import pandas as pd
 
 # test data
@@ -75,5 +76,4 @@ def test_numericalize():
     s = utilities.numericalize(iris_data, 'species', 'setosa')
     assert s.shape[1] == 6
 
-if __name__ == '__main__':
-    unittest.main()
+

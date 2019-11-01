@@ -1,11 +1,10 @@
-image: "python:3.7"
-
 stages:
-    - build
-    - test
-    - deploy
+  - test
 
-before_script:
-    - mltools install
-
-  
+test:
+  stage: test
+  script:
+  - conda create -n mltools python=3.6
+  - source activate mltools
+  - pip install git+https://github.com/p2327/mltools
+  - pytest test_mltools.py
