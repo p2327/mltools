@@ -4,7 +4,6 @@ from pandas.api.types import is_string_dtype, is_numeric_dtype, is_categorical_d
 import re
 import sklearn
 from sklearn.preprocessing import StandardScaler
-#import sklearn-pandas
 from sklearn_pandas import DataFrameMapper
 from typing import *
 

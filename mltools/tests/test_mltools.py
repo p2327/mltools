@@ -5,7 +5,7 @@ from mltools.utilities import *
 import pandas as pd
 
 # test data
-iris_data = pd.read_csv('mltools/data/iris.csv')
+iris_data = pd.read_csv('/mltools/data/iris.csv')
 sales_data = pd.read_csv('mltools/data/bulldozers_sales.csv', index_col=0)
 currency_data = pd.read_csv('mltools/data/currency.csv', index_col=0)
 
