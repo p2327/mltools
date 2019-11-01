@@ -13,7 +13,7 @@ setup(name='mltools',
             'pandas',
             'pytest', 
             'scikit-learn', 
-            'sklearn-pandas',
+            'sklearn_pandas',
             'typing'
             ],
       include_package_data=True,
