@@ -5,16 +5,18 @@ from mltools.utilities import *
 import pandas as pd
 import os
 
+'''
 _ROOT = os.path.abspath(os.path.dirname('data'))
 def get_data(path):
     return os.path.join(_ROOT, 'data', path)
 
 print(get_data('iris.csv'))
+'''
 
 # test data
-iris_data = pd.read_csv(get_data('iris.csv'))
-sales_data = pd.read_csv(get_data('bulldozers_sales.csv'), index_col=0)
-currency_data = pd.read_csv(get_data('currency.csv'), index_col=0)
+iris_data = pd.read_csv('mltools/data/iris.csv'))
+sales_data = pd.read_csv(get_data('mltools/data/bulldozers_sales.csv', index_col=0)
+currency_data = pd.read_csv(get_data('mltools/data/currency.csv', index_col=0)
 
 # test data for make_dict
 use_dict = {'a': 1, 'b': 2, 'c': 3}
