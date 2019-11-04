@@ -36,7 +36,8 @@ def train_cats(df: pd.DataFrame) -> pd.DataFrame:
     category
     """
     for label, content in df.items():
-        if is_string_dtype(content): df[label] = content.astype('category').cat.as_ordered()
+        if is_string_dtype(content):
+            df[label] = content.astype('category').cat.as_ordered()
     return df
 
 
@@ -46,7 +47,7 @@ def add_datepart(df: pd.DataFrame, date_field_name: str, drop: bool=True, time: 
     Adds columns relevant to discrete properties of a date.
     """
     # make target date column generic
-    df.rename(columns={date_field_name:'date'}, inplace=True)
+    df.rename(columns={date_field_name: 'date'}, inplace=True)
     date_field_name = [i for i in df.columns if i == 'date'][0]
     # initialise variables
     field = df[date_field_name]
