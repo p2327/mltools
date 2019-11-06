@@ -260,3 +260,37 @@ def numericalize(df: pd.DataFrame, col: pd.Series, target_label: str, max_n_cat:
     if not is_numeric_dtype(col) and (max_n_cat is None or len(col.cat.categories)>max_n_cat):
         df[target_label] = pd.Categorical(col).codes+1
     return df
+
+# TODO 
+def split_vals(df, n): 
+    ''' 
+    Returns df copy of up to n and from n to end of the rows
+    df[:n] for training and df[n:] for validation.
+    '''
+    return df[:n].copy().reset_index(drop=True), df[n:].copy().reset_index(drop=True)
+
+
+def peek(df):
+    with pd.option_context("display.max_colwidth", 20):
+        info = pd.DataFrame()
+        info['sample'] = df.iloc[0]
+        info['data type'] = df.dtypes
+        info['percent missing'] = df.isnull().sum()*100/len(df)
+        return info.sort_values('data type')
+
+
+def rf_feat_importance(m, df):
+    return pd.DataFrame({
+        'cols':df.columns, 
+        'imp':m.feature_importances_
+        }).sort_values('imp', ascending=False)
+
+
+def plot_fi(features): 
+    return features.plot('cols', 
+                         'imp', 
+                         'barh', 
+                         figsize=(8,6),
+                         colormap='RdBu', 
+                         legend=False
+                         )
