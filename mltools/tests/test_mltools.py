@@ -2,16 +2,10 @@
 import pytest
 from mltools import utilities
 from mltools.utilities import *
+import numpy as np
 import pandas as pd
 import os
 
-'''
-_ROOT = os.path.abspath(os.path.dirname('data'))
-def get_data(path):
-    return os.path.join(_ROOT, 'data', path)
-
-print(get_data('iris.csv'))
-'''
 
 # test data
 iris_data = pd.read_csv('mltools/data/iris.csv')
@@ -22,7 +16,7 @@ currency_data = pd.read_csv('mltools/data/currency.csv', index_col=0)
 use_dict = {'a': 1, 'b': 2, 'c': 3}
 
 # test data for fix_missing
-use_df = pd.DataFrame({'col1' : [1, np.NaN, 3], 'col2' : [5, 2, 2]})
+use_df = pd.DataFrame({'col1': [1, np.NaN, 3], 'col2': [5, 2, 2]})
 
 
 def test_train_cats(): # ok
@@ -31,7 +25,7 @@ def test_train_cats(): # ok
 
 
 def test_add_datepart(): # ok
-    s = add_datepart(sales_data, 'saledate')
+    s = utilities.add_datepart(sales_data, 'saledate')
     assert 'Year' in s.columns
 
 
