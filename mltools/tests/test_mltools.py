@@ -1,10 +1,9 @@
-# coding: utf-8 
-import pytest
+# coding: utf-8
 from mltools import utilities
-from mltools.utilities import *
+
 import numpy as np
 import pandas as pd
-import os
+import sklearn_pandas as skp
 
 
 # test data
@@ -19,17 +18,17 @@ use_dict = {'a': 1, 'b': 2, 'c': 3}
 use_df = pd.DataFrame({'col1': [1, np.NaN, 3], 'col2': [5, 2, 2]})
 
 
-def test_train_cats(): # ok
+def test_train_cats():  # ok
     s = utilities.train_cats(iris_data)
     assert isinstance(s['species'].dtype, pd.CategoricalDtype)
 
 
-def test_add_datepart(): # ok
+def test_add_datepart():  # ok
     s = utilities.add_datepart(sales_data, 'saledate')
-    assert 'Year' in s.columns
+    assert 'date_year' in s.columns
 
 
-def test_remove_column_if_label_contains(): # ok
+def test_remove_column_if_label_contains():  # ok
     s = utilities.remove_column_if_label_contains(iris_data, ['length'])
     assert s.shape[1] == 3
 
@@ -41,7 +40,9 @@ def test_remove_row_if_column_contains():
 
 # add some currency data for this
 def test_cur_to_int():
-    s = utilities.cur_to_int(currency_data, '£', 'Modelled_Household_median_income_estimates_2012/13')
+    s = utilities.cur_to_int(currency_data,
+                             '£',
+                             'Modelled_Household_median_income_estimates_2012/13')
     assert isinstance(s['Modelled_Household_median_income_estimates_2012/13'][0], np.int64)
 
 
@@ -57,7 +58,7 @@ def test_make_new_col():
 
 def test_scale_vars():
     s = utilities.scale_vars(iris_data)
-    assert isinstance(s, sklearn_pandas.DataFrameMapper)
+    assert isinstance(s, skp.DataFrameMapper)
 
 
 def test_get_sample():
@@ -66,17 +67,19 @@ def test_get_sample():
 
 
 def test_proc_df():
+    # reload test data as we removed features in the previous tests
+    iris_data = pd.read_csv('mltools/data/iris.csv')
     s = utilities.proc_df(iris_data, 'species')
     assert s[0].shape[1] == 4
 
 
 def test_fix_missing():
-    s = utilities_fix_missing(use_df, 'col1', 'col1')
+    utilities.fix_missing(use_df, use_df['col1'], 'col1')
     assert use_df['col1'][1] == use_df['col1'].median()
 
 
 def test_numericalize():
-    s = utilities.numericalize(iris_data, 'species', 'setosa')
+    # reload test data as we removed features in the previous tests
+    iris_data = pd.read_csv('mltools/data/iris.csv')
+    s = utilities.numericalize(iris_data, iris_data['species'], 'setosa')
     assert s.shape[1] == 6
-
-

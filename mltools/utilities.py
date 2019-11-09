@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
-from pandas.api.types import (is_string_dtype, is_numeric_dtype,
-                              is_categorical_dtype)
-import re
+from pandas.api.types import is_string_dtype, is_numeric_dtype
+
 import sklearn
+import sklearn_pandas as skp
 from sklearn.preprocessing import StandardScaler
 from sklearn_pandas import DataFrameMapper
 from typing import Callable, List, Union, Tuple
@@ -50,8 +50,8 @@ def add_datepart(df: pd.DataFrame, date_field_name: str, drop: bool = True,
     Adds columns relevant to discrete properties of a date.
     """
     # make target date column generic
-    df.rename(columns={date_field_name: 'date'}, inplace=True)
-    date_field_name = [i for i in df.columns if i == 'date'][0]
+    df.rename(columns={date_field_name: 'date_'}, inplace=True)
+    date_field_name = [i for i in df.columns if i == 'date_'][0]
     # initialise variables
     field = df[date_field_name]
     field_dtype = field.dtype
@@ -66,27 +66,27 @@ def add_datepart(df: pd.DataFrame, date_field_name: str, drop: bool = True,
 
     # leaves dp and add attributes
     # targ_pre = re.sub('[Dd]ate$', '', date_field_name)
-    attributes = ['Year',
-                  'Month',
-                  'Week',
-                  'Day',
-                  'Dayofweek',
-                  'Dayofyear',
-                  'Is_month_end',
-                  'Is_month_start',
-                  'Is_quarter_end',
-                  'Is_quarter_start',
-                  'Is_year_end',
-                  'Is_year_start']
+    attributes = ['year',
+                  'month',
+                  'week',
+                  'day',
+                  'dayofweek',
+                  'dayofyear',
+                  'is_month_end',
+                  'is_month_start',
+                  'is_quarter_end',
+                  'is_quarter_start',
+                  'is_year_end',
+                  'is_year_start']
 
     if time:
-        attributes = attributes + ['Hour', 'Minute', 'Second']
+        attributes = attributes + ['hour', 'minute', 'second']
 
-    # creates new columns with pattern+attribute
+    # creates new features with pattern+attribute
     for attribute in attributes:
         df[date_field_name + attribute] = getattr(field.dt, attribute.lower())
-
-    df[date_field_name + 'Elapsed'] = field.astype(np.int64) // 10 ** 9
+    # adds the number of days since the first date in the dataset
+    df[date_field_name + 'elapsed'] = field.astype(np.int64) // 10 ** 9
 
     if drop:
         df.drop(date_field_name, axis=1, inplace=True)
@@ -126,7 +126,8 @@ def cur_to_int(df: pd.DataFrame, symbol: str, column: str) -> pd.DataFrame:
     Convert a currency from str to int and removes its symbol.
     """
     loc = df.columns.get_loc(column)
-    clean_col = df[column].replace(f'[{symbol},]', '', regex=True).astype(int)
+    clean_col = df[column].replace(f'[{symbol},]',
+                                   '', regex=True).astype(np.int64)
     df.drop(column, axis=1, inplace=True)
     df.insert(loc, column, clean_col)
     return df
@@ -148,7 +149,8 @@ def make_new_col(d: dict, keys: List[str]) -> List:
     return [d[key] for key in keys]
 
 
-def scale_vars(df: pd.DataFrame, mapper: DataFrameMapper = None) -> np.ndarray:
+def scale_vars(df: pd.DataFrame,
+               mapper: DataFrameMapper = None) -> skp.DataFrameMapper:
     """
     Returns a mapper to scale variables.
     """
