@@ -7,7 +7,7 @@ import sklearn_pandas as skp
 
 
 # Test data
-ircdis_data = pd.read_csv('mltools/data/iris.csv')
+iris_data = pd.read_csv('mltools/data/iris.csv')
 sales_data = pd.read_csv('mltools/data/bulldozers_sales.csv', index_col=0)
 currency_data = pd.read_csv('mltools/data/currency.csv', index_col=0)
 
