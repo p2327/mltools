@@ -6,16 +6,27 @@ import pandas as pd
 import sklearn_pandas as skp
 
 
-# test data
-iris_data = pd.read_csv('mltools/data/iris.csv')
+# Test data
+ircdis_data = pd.read_csv('mltools/data/iris.csv')
 sales_data = pd.read_csv('mltools/data/bulldozers_sales.csv', index_col=0)
 currency_data = pd.read_csv('mltools/data/currency.csv', index_col=0)
 
-# test data for make_dict
+# Test data for make_dict
 use_dict = {'a': 1, 'b': 2, 'c': 3}
 
-# test data for fix_missing
+# Test data for fix_missing
 use_df = pd.DataFrame({'col1': [1, np.NaN, 3], 'col2': [5, 2, 2]})
+
+# Test darta for dedupe
+use_data = [['ARVBRGZ1187FB4675A', 'Gwen Stefani', '', 0.0, 0.0],
+            ['AR47JEX1187B995D81', 'SUE THOMPSON', 'Nevada, MO', 37.837, -94.359],
+            ['ARVBRGZ1187FB4675A', 'Gwen Stefani', '', 0.0, 0.0]]
+
+
+# TESTS
+def test_dedupe():
+    s = utilities.dedupe(use_data)
+    assert len(s) == 2
 
 
 def test_train_cats():  # ok

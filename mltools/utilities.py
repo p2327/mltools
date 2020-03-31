@@ -6,7 +6,7 @@ import sklearn
 import sklearn_pandas as skp
 from sklearn.preprocessing import StandardScaler
 from sklearn_pandas import DataFrameMapper
-from typing import Callable, List, Union, Tuple
+from typing import Callable, List, Union, Tuple, Any
 import warnings
 
 
@@ -285,6 +285,12 @@ def numericalize(df: pd.DataFrame, col: pd.Series,
     if not is_numeric_dtype(col) and (max_n_cat is None or len(col.cat.categories) > max_n_cat):
         df[target_label] = pd.Categorical(col).codes+1
     return df
+
+
+def dedupe(data: List[Any]) -> List[Any]:
+    data_set = set(tuple(x) for x in data)
+    data_deduped = [list(x) for x in data_set]
+    return data_deduped
 
 
 # TODO
