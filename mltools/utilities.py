@@ -1,3 +1,4 @@
+import functools
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_string_dtype, is_numeric_dtype
@@ -6,8 +7,25 @@ import sklearn
 import sklearn_pandas as skp
 from sklearn.preprocessing import StandardScaler
 from sklearn_pandas import DataFrameMapper
+import time
 from typing import Callable, List, Union, Tuple, Any
 import warnings
+
+
+def timer(f: Callable) -> Callable:
+    """
+    Timer decorator implementation.
+    Print the runtime of decorated functions.
+    """
+    @functools.wraps
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = f(*args, **kwargs)
+        end = time.perf_counter()
+        run_time = end - start
+        print(f"{f.__name__!r} finished in {run_time:4f} seconds")
+        return result
+    return wrapper
 
 
 def train_cats(df: pd.DataFrame) -> pd.DataFrame:
