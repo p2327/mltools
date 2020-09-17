@@ -17,7 +17,7 @@ def timer(f: Callable) -> Callable:
     Timer decorator implementation.
     Print the runtime of decorated functions.
     """
-    @functools.wraps
+    @functools.wraps(f)
     def wrapper(*args, **kwargs):
         start = time.perf_counter()
         result = f(*args, **kwargs)
